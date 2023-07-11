@@ -156,6 +156,8 @@ class ExpandableDataTable extends StatefulWidget {
     ExpandableRow row,
   )? renderExpansionContent;
 
+  final List<int>? initialExpandedRow;
+
   ExpandableDataTable({
     Key? key,
     required this.headers,
@@ -169,6 +171,7 @@ class ExpandableDataTable extends StatefulWidget {
     this.renderEditDialog,
     this.renderCustomPagination,
     this.renderExpansionContent,
+    this.initialExpandedRow,
   })  : assert(visibleColumnCount > 0),
         assert(
           rows.isNotEmpty ? headers.length == rows.first.cells.length : true,
@@ -194,7 +197,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
 
   int _totalPageCount = 0;
   int _currentPage = 0;
-  int _selectedRow = -1;
+  late int _selectedRow = -1;
 
   int get pageLength =>
       _sortedRowsList.isNotEmpty ? _sortedRowsList[_currentPage].length : 0;
@@ -419,7 +422,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
           secondTrailing:
               widget.isEditable ? buildEditIcon(context, index) : null,
           onExpansionChanged: (value) => _onExpansionChanged(value, index),
-          initiallyExpanded: _selectedRow == index,
+          initiallyExpanded: _selectedRow == index || (widget.initialExpandedRow?.contains(index) ?? false),
           title: buildRowTitleContent(titleCells),
           childrenPadding: EdgeInsets.symmetric(vertical: context.lowValue),
           children: buildExpansionContent(context, row, expansionCells),

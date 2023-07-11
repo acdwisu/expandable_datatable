@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                   child: ExpandableDataTable(
                     headers: headers,
                     rows: rows,
-                    multipleExpansion: false,
+                    // multipleExpansion: false,
                     isEditable: false,
                     onRowChanged: (newRow) {
                       print(newRow.cells[01].value);
@@ -151,6 +151,7 @@ class _HomePageState extends State<HomePage> {
                     renderEditDialog: (row, onSuccess) =>
                         _buildEditDialog(row, onSuccess),
                     visibleColumnCount: visibleCount,
+                    initialExpandedRow: [0,3,7],
                   ),
                 );
               })
