@@ -13,6 +13,7 @@ import 'widget/expansion_container.dart';
 import 'widget/pagination_widget.dart';
 import 'widget/table_header.dart';
 import 'widget/title_container.dart';
+import 'package:collection/collection.dart';
 
 class ExpandableDataTable extends StatefulWidget {
   /// The data of rows
@@ -197,16 +198,26 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
 
   int _totalPageCount = 0;
   int _currentPage = 0;
-  late int _selectedRow = -1;
+  int _selectedRow = -1;
 
   int get pageLength =>
       _sortedRowsList.isNotEmpty ? _sortedRowsList[_currentPage].length : 0;
+
+  final _initialExpandedRow = <int>[];
 
   @override
   void initState() {
     super.initState();
 
     _composeRowsList(widget.rows, isInit: true);
+
+    if(widget.initialExpandedRow!=null) {
+      if (!widget.multipleExpansion && widget.initialExpandedRow!.length > 1) {
+        _initialExpandedRow.add(widget.initialExpandedRow![0]);
+      } else {
+        _initialExpandedRow.addAll(widget.initialExpandedRow!);
+      }
+    }
   }
 
   @override
@@ -422,7 +433,7 @@ class _ExpandableDataTableState extends State<ExpandableDataTable> {
           secondTrailing:
               widget.isEditable ? buildEditIcon(context, index) : null,
           onExpansionChanged: (value) => _onExpansionChanged(value, index),
-          initiallyExpanded: _selectedRow == index || (widget.initialExpandedRow?.contains(index) ?? false),
+          initiallyExpanded: _selectedRow == index || (_initialExpandedRow.contains(index) ?? false),
           title: buildRowTitleContent(titleCells),
           childrenPadding: EdgeInsets.symmetric(vertical: context.lowValue),
           children: buildExpansionContent(context, row, expansionCells),
